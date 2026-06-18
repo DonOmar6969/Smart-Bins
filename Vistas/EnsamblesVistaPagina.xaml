@@ -1,0 +1,95 @@
+﻿<Page x:Class="SmartBins.Vistas.EnsamblesVistaPagina"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="600" d:DesignWidth="900"
+      Title="Ensambles">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Ensambles" FontSize="22"
+                   FontWeight="Bold" Foreground="#0066CC" Margin="0,0,0,20"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Lista de ensambles -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Ensambles registrados" FontWeight="Bold"
+                           Foreground="#333333" Margin="0,0,0,10"/>
+
+                <!-- Buscador y filtro -->
+                <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                    <TextBox x:Name="TxtBuscar" Height="35" VerticalContentAlignment="Center"
+                             Margin="0,0,0,8" TextChanged="TxtBuscar_TextChanged"/>
+                    <ComboBox x:Name="CmbFiltroUnidad" Height="35"
+                              SelectionChanged="CmbFiltroUnidad_SelectionChanged">
+                        <ComboBoxItem Content="Todas" IsSelected="True"/>
+                        <ComboBoxItem Content="Interunit"/>
+                        <ComboBoxItem Content="Commercial Vehicle"/>
+                        <ComboBoxItem Content="Embedded Power"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <ListBox Grid.Row="2" x:Name="ListaEnsambles"
+                         DisplayMemberPath="Nombre"
+                         BorderBrush="#DDDDDD" BorderThickness="1"
+                         SelectionChanged="ListaEnsambles_SelectionChanged"/>
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,10,0,0">
+                    <Button Content="Editar" Width="80" Height="35" Margin="0,0,5,0"
+                            Background="#0066CC" Foreground="White" BorderThickness="0"
+                            Cursor="Hand" Click="Editar_Click"/>
+                    <Button Content="Eliminar" Width="80" Height="35"
+                            Background="#CC0000" Foreground="White" BorderThickness="0"
+                            Cursor="Hand" Click="Eliminar_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Secuencia del ensamble seleccionado -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" x:Name="TxtNombreEnsamble"
+                           FontWeight="Bold" FontSize="16"
+                           Foreground="#0066CC" Margin="0,0,0,5"/>
+
+                <TextBlock Grid.Row="1" x:Name="TxtTiempoTotal"
+                           Foreground="#666666" FontSize="12" Margin="0,0,0,10"/>
+
+                <DataGrid Grid.Row="2" x:Name="GridSecuencia" AutoGenerateColumns="False"
+                          IsReadOnly="True" BorderBrush="#DDDDDD" GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="#EEEEEE" RowHeight="35" FontSize="13">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#" Binding="{Binding OrdenSecuencia}" Width="40"/>
+                        <DataGridTextColumn Header="Est." Binding="{Binding EstacionAsignada}" Width="45"/>
+                        <DataGridTextColumn Header="Tipo" Binding="{Binding NombreComponente}" Width="120"/>
+                        <DataGridTextColumn Header="Especificación" Binding="{Binding EspecificacionComponente}" Width="*"/>
+                        <DataGridTextColumn Header="Tiempo (seg)" Binding="{Binding TiempoEstimado}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

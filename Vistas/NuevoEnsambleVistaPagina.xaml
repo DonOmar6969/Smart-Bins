@@ -1,0 +1,140 @@
+﻿<Page x:Class="SmartBins.Vistas.NuevoEnsambleVistaPagina"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="600" d:DesignWidth="900"
+      Title="Nuevo Ensamble">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Título -->
+        <TextBlock Grid.Row="0" Text="Nuevo Ensamble" FontSize="22"
+                   FontWeight="Bold" Foreground="#0066CC" Margin="0,0,0,20"/>
+
+        <!-- Datos del ensamble -->
+        <WrapPanel Grid.Row="1" Margin="0,0,0,20">
+            <Label Content="Nombre:" VerticalAlignment="Center" Foreground="#333333"/>
+            <TextBox x:Name="TxtNombreEnsamble" Width="180" Height="35"
+                     VerticalContentAlignment="Center" Margin="0,0,15,0"/>
+
+            <Label Content="Unidad de trabajo:" VerticalAlignment="Center" Foreground="#333333"/>
+            <ComboBox x:Name="CmbUnidadTrabajo" Width="180" Height="35" Margin="0,0,15,0"
+                      VerticalContentAlignment="Center">
+                <ComboBoxItem Content="Interunit"/>
+                <ComboBoxItem Content="Commercial Vehicle"/>
+                <ComboBoxItem Content="Embedded Power"/>
+            </ComboBox>
+
+            <Label Content="Operadores default:" VerticalAlignment="Center" Foreground="#333333"/>
+            <TextBox x:Name="TxtOperadoresDefault" Width="60" Height="35"
+                     VerticalContentAlignment="Center" Margin="0,0,0,0"/>
+        </WrapPanel>
+
+        <!-- Contenido principal -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Lista de componentes disponibles -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Componentes disponibles" FontWeight="Bold"
+                           Foreground="#333333" Margin="0,0,0,10"/>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
+                    <Label Content="Tipo:" VerticalAlignment="Center" Foreground="#333333" Width="90"/>
+                    <ComboBox x:Name="CmbTipo" Width="180" Height="35"
+                              SelectionChanged="CmbTipo_SelectionChanged"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,8">
+                    <Label Content="Especificación:" VerticalAlignment="Center" Foreground="#333333" Width="90"/>
+                    <TextBox x:Name="TxtFiltroEspecificacion" Width="180" Height="35"
+                             VerticalContentAlignment="Center"
+                             TextChanged="TxtFiltroEspecificacion_TextChanged"/>
+                </StackPanel>
+
+                <ListBox Grid.Row="3" x:Name="ListaComponentes"
+                         DisplayMemberPath="Descripcion"
+                         BorderBrush="#DDDDDD" BorderThickness="1"/>
+
+                <WrapPanel Grid.Row="4" Margin="0,10,0,0">
+                    <Label Content="Tiempo (seg):" VerticalAlignment="Center" Foreground="#333333"/>
+                    <TextBox x:Name="TxtTiempo" Width="70" Height="35"
+                             VerticalContentAlignment="Center" Margin="5,0,10,0"/>
+                    <Label Content="Estación:" VerticalAlignment="Center" Foreground="#333333"/>
+                    <TextBox x:Name="TxtEstacion" Width="50" Height="35"
+                             VerticalContentAlignment="Center" Margin="5,0,0,0"/>
+                </WrapPanel>
+            </Grid>
+
+            <!-- Botones -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+                <Button Content="Agregar ▶" Width="90" Height="35" Margin="0,0,0,5"
+                        Background="#0066CC" Foreground="White" BorderThickness="0"
+                        Cursor="Hand" Click="AgregarComponenteSecuencia_Click"/>
+                <Button Content="◀ Quitar" Width="90" Height="35"
+                        Background="#CC0000" Foreground="White" BorderThickness="0"
+                        Cursor="Hand" Click="QuitarComponenteSecuencia_Click"/>
+            </StackPanel>
+
+            <!-- Secuencia armada -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Secuencia del ensamble" FontWeight="Bold"
+                           Foreground="#333333" Margin="0,0,0,10"/>
+
+                <DataGrid Grid.Row="1" x:Name="GridSecuencia" AutoGenerateColumns="False"
+                          IsReadOnly="True" BorderBrush="#DDDDDD" GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="#EEEEEE" RowHeight="35" FontSize="13">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#" Binding="{Binding OrdenSecuencia}" Width="40"/>
+                        <DataGridTextColumn Header="Est." Binding="{Binding EstacionAsignada}" Width="45"/>
+                        <DataGridTextColumn Header="Componente" Binding="{Binding NombreComponente}" Width="*"/>
+                        <DataGridTextColumn Header="Especificación" Binding="{Binding EspecificacionComponente}" Width="*"/>
+                        <DataGridTextColumn Header="Seg" Binding="{Binding TiempoEstimado}" Width="55"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
+                    <Button Content="⬆ Subir" Width="80" Height="35" Margin="0,0,5,0"
+                            Background="#888888" Foreground="White" BorderThickness="0"
+                            Cursor="Hand" Click="SubirComponente_Click"/>
+                    <Button Content="⬇ Bajar" Width="80" Height="35"
+                            Background="#888888" Foreground="White" BorderThickness="0"
+                            Cursor="Hand" Click="BajarComponente_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- Botón guardar -->
+        <Button Grid.Row="3" Content="Guardar Ensamble" Width="160" Height="40"
+                HorizontalAlignment="Right" Margin="0,15,0,0"
+                Background="#0066CC" Foreground="White" BorderThickness="0"
+                FontSize="14" Cursor="Hand" Click="GuardarEnsamble_Click"/>
+
+    </Grid>
+</Page>
