@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="../SmartBins/SmartBins.csproj" Id="5f98c937-aa7f-41ad-9b3b-4ae4290a84d6" />
-  <Project Path="../SmartBins/SmartBins.Core/SmartBins.Core.csproj" />
-  <Project Path="../SmartBins/SmartBins.Preparacion/SmartBins.Preparacion.csproj" />
+  <Project Path="SmartBins.csproj" Id="5f98c937-aa7f-41ad-9b3b-4ae4290a84d6" />
+  <Project Path="SmartBins.Core/SmartBins.Core.csproj" />
+  <Project Path="SmartBins.Preparacion/SmartBins.Preparacion.csproj" />
 </Solution>
