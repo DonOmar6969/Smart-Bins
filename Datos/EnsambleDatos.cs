@@ -14,7 +14,7 @@ namespace SmartBins.Datos
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "SELECT Nombre, TiempoEstimado, UnidadTrabajo, NumeroOperadoresDefault FROM Ensambles";
+                string query = "SELECT Nombre, TiempoEstimado, UnidadTrabajo, NumeroOperadoresDefault FROM SB.Ensambles";
                 SqlCommand cmd = new SqlCommand(query, con);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -22,12 +22,13 @@ namespace SmartBins.Datos
                     lista.Add(new Ensamble
                     {
                         Nombre = reader["Nombre"].ToString(),
-                        TiempoEstimado = reader["TiempoEstimado"] == DBNull.Value ? 0 : (int)reader["TiempoEstimado"],
+                        TiempoEstimado = reader["TiempoEstimado"] == DBNull.Value ? 0 : Convert.ToInt32(reader["TiempoEstimado"]),
                         UnidadTrabajo = reader["UnidadTrabajo"].ToString(),
-                        NumeroOperadoresDefault = reader["NumeroOperadoresDefault"] == DBNull.Value ? 0 : (int)reader["NumeroOperadoresDefault"]
+                        NumeroOperadoresDefault = reader["NumeroOperadoresDefault"] == DBNull.Value ? 0 : Convert.ToInt32(reader["NumeroOperadoresDefault"])
                     });
                 }
             }
+            lista.ForEach(Servicios.ControlEnsambleService.Aplicar);
             return lista;
         }
 
@@ -36,20 +37,14 @@ namespace SmartBins.Datos
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "INSERT INTO Ensambles (Nombre, TiempoEstimado, UnidadTrabajo, NumeroOperadoresDefault) VALUES (@Nombre, @TiempoEstimado, @UnidadTrabajo, @NumeroOperadoresDefault)";
+                string query = "INSERT INTO SB.Ensambles (Nombre, NumeroParte, TiempoEstimado, UnidadTrabajo, NumeroOperadoresDefault) VALUES (@Nombre, @NumeroParte, @TiempoEstimado, @UnidadTrabajo, @NumeroOperadoresDefault)";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@Nombre", ensamble.Nombre);
+                cmd.Parameters.AddWithValue("@NumeroParte", ensamble.NumeroParte ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@TiempoEstimado", ensamble.TiempoEstimado == 0 ? (object)DBNull.Value : ensamble.TiempoEstimado);
                 cmd.Parameters.AddWithValue("@UnidadTrabajo", ensamble.UnidadTrabajo ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@NumeroOperadoresDefault", ensamble.NumeroOperadoresDefault == 0 ? (object)DBNull.Value : ensamble.NumeroOperadoresDefault);
-                try 
-                {
-                    cmd.ExecuteNonQuery();
-                } 
-                catch 
-                {
-                    MessageBox.Show("Error al agregar el ensamble. Verifique que el nombre no esté duplicado.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                cmd.ExecuteNonQuery();
             }
         }
         public List<Ensamble> ObtenerPorFiltro(string nombre, string unidadTrabajo)
@@ -58,7 +53,7 @@ namespace SmartBins.Datos
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "SELECT Nombre, TiempoEstimado, UnidadTrabajo, NumeroOperadoresDefault FROM Ensambles WHERE 1=1";
+                string query = "SELECT Nombre, TiempoEstimado, UnidadTrabajo, NumeroOperadoresDefault FROM SB.Ensambles WHERE 1=1";
 
                 if (!string.IsNullOrWhiteSpace(nombre))
                     query += " AND Nombre LIKE @Nombre";
@@ -78,12 +73,13 @@ namespace SmartBins.Datos
                     lista.Add(new Ensamble
                     {
                         Nombre = reader["Nombre"].ToString(),
-                        TiempoEstimado = reader["TiempoEstimado"] == DBNull.Value ? 0 : (int)reader["TiempoEstimado"],
+                        TiempoEstimado = reader["TiempoEstimado"] == DBNull.Value ? 0 : Convert.ToInt32(reader["TiempoEstimado"]),
                         UnidadTrabajo = reader["UnidadTrabajo"].ToString(),
-                        NumeroOperadoresDefault = reader["NumeroOperadoresDefault"] == DBNull.Value ? 0 : (int)reader["NumeroOperadoresDefault"]
+                        NumeroOperadoresDefault = reader["NumeroOperadoresDefault"] == DBNull.Value ? 0 : Convert.ToInt32(reader["NumeroOperadoresDefault"])
                     });
                 }
             }
+            lista.ForEach(Servicios.ControlEnsambleService.Aplicar);
             return lista;
         }
         public void Actualizar(Ensamble ensamble)
@@ -91,7 +87,7 @@ namespace SmartBins.Datos
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "UPDATE Ensambles SET TiempoEstimado = @TiempoEstimado, UnidadTrabajo = @UnidadTrabajo, NumeroOperadoresDefault = @NumeroOperadoresDefault WHERE Nombre = @Nombre";
+                string query = "UPDATE SB.Ensambles SET TiempoEstimado = @TiempoEstimado, UnidadTrabajo = @UnidadTrabajo, NumeroOperadoresDefault = @NumeroOperadoresDefault WHERE Nombre = @Nombre";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@Nombre", ensamble.Nombre);
                 cmd.Parameters.AddWithValue("@TiempoEstimado", ensamble.TiempoEstimado);
@@ -105,10 +101,10 @@ namespace SmartBins.Datos
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "SELECT COUNT(*) FROM Ensambles WHERE Nombre = @Nombre";
+                string query = "SELECT COUNT(*) FROM SB.Ensambles WHERE Nombre = @Nombre";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@Nombre", nombre);
-                return (int)cmd.ExecuteScalar() > 0;
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
             }
         }
         public void Eliminar(string nombre)
@@ -116,7 +112,7 @@ namespace SmartBins.Datos
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "DELETE FROM Ensambles WHERE Nombre = @Nombre";
+                string query = "DELETE FROM SB.Ensambles WHERE Nombre = @Nombre";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@Nombre", nombre);
                 cmd.ExecuteNonQuery();

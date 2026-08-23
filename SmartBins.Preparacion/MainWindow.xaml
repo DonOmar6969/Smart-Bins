@@ -1,0 +1,134 @@
+<Window x:Class="SmartBins.Preparacion.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Preparación de estaciones" Height="820" Width="1280"
+        MinHeight="700" MinWidth="1050" WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="78" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Column="0" Grid.RowSpan="2" Background="#0066CC">
+            <StackPanel Margin="14,24">
+                <Border Padding="10" Background="White" CornerRadius="8" Margin="0,0,0,24">
+                    <Image Source="Assets/Eaton-logo.png" Height="52" Stretch="Uniform" />
+                </Border>
+                <Button Content="Preparar estaciones" Margin="0,3" HorizontalContentAlignment="Left" Click="Preparacion_Click" />
+                <Button Content="Inventario" Margin="0,3" HorizontalContentAlignment="Left" Click="Inventario_Click" />
+                <Button Content="Ensambles" Margin="0,3" HorizontalContentAlignment="Left" Click="Ensambles_Click" />
+                <Button Content="Nuevo ensamble" Margin="0,3" HorizontalContentAlignment="Left" Click="NuevoEnsamble_Click" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1" Grid.Row="0" Background="White" BorderBrush="#DDE3E9" BorderThickness="0,0,0,1">
+            <Grid Margin="28,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Image Source="Assets/Eaton-logo.png" Width="112" Stretch="Uniform" />
+                <StackPanel Grid.Column="1" Margin="24,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="PREPARACIÓN DE ESTACIONES" FontSize="20" FontWeight="Bold" Foreground="#1E2A35" />
+                    <TextBlock Text="Guía de carga para mobile workstation" Foreground="#65727E" />
+                </StackPanel>
+                <Border Grid.Column="2" Background="#E8F4EC" CornerRadius="16" Padding="14,7" VerticalAlignment="Center">
+                    <TextBlock Text="●  SISTEMA LISTO" Foreground="#267A46" FontWeight="SemiBold" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <Grid x:Name="ContenidoPreparacion" Grid.Column="1" Grid.Row="1" Margin="28">
+            <Grid x:Name="PanelSeleccion">
+                <Border Background="White" CornerRadius="12" Padding="42" MaxWidth="760" VerticalAlignment="Center">
+                    <StackPanel>
+                        <TextBlock Text="Seleccione el ensamble" FontSize="30" FontWeight="Bold" Foreground="#1E2A35" />
+                        <TextBlock Margin="0,10,0,30" Text="El sistema preparará la distribución de componentes, bins y posiciones para cada estación."
+                                   FontSize="16" Foreground="#65727E" TextWrapping="Wrap" />
+                        <TextBlock Text="Modelo / ensamble" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <ComboBox x:Name="CmbEnsambles" Height="52" FontSize="17" DisplayMemberPath="Descripcion"
+                                  SelectionChanged="CmbEnsambles_SelectionChanged" />
+                        <Border x:Name="TarjetaResumen" Margin="0,22,0,0" Padding="18" Background="#F3F7FB" CornerRadius="8" Visibility="Collapsed">
+                            <TextBlock x:Name="TxtResumenEnsamble" FontSize="15" Foreground="#33404C" />
+                        </Border>
+                        <TextBlock x:Name="TxtError" Margin="0,16,0,0" Foreground="#B42318" TextWrapping="Wrap" />
+                        <Button x:Name="BtnComenzar" Margin="0,28,0,0" Height="54" Background="{StaticResource PrimaryBrush}"
+                                Foreground="White" Content="CREAR GUÍA DE PREPARACIÓN" IsEnabled="False" Click="BtnComenzar_Click" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid x:Name="PanelGuia" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="260" />
+                    <ColumnDefinition Width="18" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Background="#1D2B38" CornerRadius="10" Padding="20">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Bottom" Content="CAMBIAR ENSAMBLE" Margin="0,18,0,0"
+                                Background="#334657" Foreground="White" Click="BtnCambiar_Click" />
+                        <StackPanel>
+                            <TextBlock Text="ENSAMBLE ACTIVO" Foreground="#91A3B4" FontSize="12" FontWeight="Bold" />
+                            <TextBlock x:Name="TxtEnsambleActivo" Margin="0,6,0,26" Foreground="White" FontSize="20" FontWeight="Bold" TextWrapping="Wrap" />
+                            <TextBlock Text="ESTACIONES" Foreground="#91A3B4" FontSize="12" FontWeight="Bold" />
+                            <ListBox x:Name="ListaEstaciones" Margin="0,10,0,0" Background="Transparent" BorderThickness="0"
+                                     SelectionChanged="ListaEstaciones_SelectionChanged" />
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Name="TxtTituloEstacion" FontSize="30" FontWeight="Bold" Foreground="#1E2A35" />
+                    <Grid Grid.Row="1" Margin="0,12,0,20">
+                        <ProgressBar x:Name="BarraProgreso" Height="8" Maximum="100" Foreground="{StaticResource PrimaryBrush}" />
+                        <TextBlock x:Name="TxtProgreso" HorizontalAlignment="Right" Margin="0,13,0,0" Foreground="#65727E" />
+                    </Grid>
+                    <ListBox Grid.Row="2" x:Name="ListaComponentes" BorderThickness="0" Background="Transparent">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" CornerRadius="9" Padding="18" Margin="0,0,0,10" BorderBrush="#DDE3E9" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="82" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="62" Height="62" Background="#EAF2F9" CornerRadius="7">
+                                            <TextBlock Text="{Binding Posicion}" FontSize="21" FontWeight="Bold" Foreground="#005EB8"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Titulo}" FontSize="18" FontWeight="Bold" Foreground="#1E2A35" />
+                                            <TextBlock Text="{Binding Detalle}" Margin="0,4,0,0" Foreground="#52616E" />
+                                            <TextBlock Text="{Binding CantidadTexto}" Margin="0,3,0,0" Foreground="#005EB8" FontWeight="SemiBold" />
+                                        </StackPanel>
+                                        <CheckBox Grid.Column="2" Content="CARGADO" Tag="{Binding}" VerticalAlignment="Center"
+                                                  FontWeight="Bold" Foreground="#267A46" Checked="Confirmacion_Changed" Unchecked="Confirmacion_Changed" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button Grid.Row="3" x:Name="BtnFinalizar" HorizontalAlignment="Right" Margin="0,18,0,0"
+                            Background="#238636" Foreground="White" Content="FINALIZAR PREPARACIÓN" IsEnabled="False" Click="BtnFinalizar_Click" />
+                </Grid>
+            </Grid>
+        </Grid>
+        <Frame x:Name="AreaAdministracion" Grid.Column="1" Grid.RowSpan="2"
+               Visibility="Collapsed" NavigationUIVisibility="Hidden" Background="#F2F2F2" />
+    </Grid>
+</Window>

@@ -1,0 +1,116 @@
+﻿<Window x:Class="SmartBins.Vistas.ImportarExcelVentana"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Importar desde Excel — Vista Previa"
+        Height="620" Width="1000"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F5F5">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- TÍTULO -->
+        <TextBlock Grid.Row="0" Text="Vista previa de importación"
+                   FontSize="20" FontWeight="Bold" Foreground="#0066CC" Margin="0,0,0,10"/>
+
+        <!-- INFO -->
+        <Border Grid.Row="1" Background="#E8F0FE" BorderBrush="#BBCFEF"
+                BorderThickness="1" CornerRadius="4" Padding="12,8" Margin="0,0,0,10">
+            <StackPanel>
+            <TextBlock x:Name="TxtInfoHoja" FontSize="13" Foreground="#333333"/>
+            <TextBlock x:Name="TxtInfo2" FontSize="12" Foreground="#555555" Margin="0,3,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ADVERTENCIAS -->
+        <Border Grid.Row="2" x:Name="PanelAdvertencias" Background="#FFF3CD"
+                BorderBrush="#FFCC00" BorderThickness="1" CornerRadius="4"
+                Padding="12,8" Margin="0,0,0,10" Visibility="Collapsed">
+            <TextBlock x:Name="TxtAdvertencias" FontSize="12" Foreground="#856404" TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- TABLA EDITABLE -->
+        <DataGrid Grid.Row="3" x:Name="GridPreview"
+                  Style="{StaticResource ProfessionalDataGridStyle}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  BorderBrush="#DDDDDD"
+                  GridLinesVisibility="Horizontal"
+                  HorizontalGridLinesBrush="#EEEEEE"
+                  RowHeight="30" FontSize="12"
+                  AlternatingRowBackground="#FAFAFA">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="✓"
+                                        Binding="{Binding Seleccionada, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="35" IsReadOnly="False"/>
+                <DataGridTextColumn Header="Fila"       Binding="{Binding FilaOriginal}" Width="40"  IsReadOnly="True"/>
+                <DataGridTextColumn Header="No. Parte"  Binding="{Binding NumeroParte}"  Width="130" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Tipo"       Binding="{Binding Nombre}"       Width="120" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="*"   IsReadOnly="True"/>
+                <DataGridTextColumn Header="Referencia" Binding="{Binding Referencia}"   Width="75"  IsReadOnly="True"/>
+
+                <!-- Estación — EDITABLE para que el supervisor asigne -->
+                <DataGridTextColumn Header="Estación"
+                                    Binding="{Binding EstacionAsignada, UpdateSourceTrigger=PropertyChanged}"
+                                    Width="70" IsReadOnly="False">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                    <DataGridTextColumn.EditingElementStyle>
+                        <Style TargetType="TextBox">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.EditingElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="⚠" Binding="{Binding Advertencia}" Width="130" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#CC6600"/>
+                            <Setter Property="FontStyle"  Value="Italic"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Seleccionada}" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+
+        <!-- BOTONES -->
+        <Grid Grid.Row="4" Margin="0,12,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <TextBlock x:Name="TxtConteo" VerticalAlignment="Center" Foreground="#555555" FontSize="13"/>
+                <Button Content="Seleccionar todo"   Width="120" Height="32" Margin="15,0,5,0"
+                        Background="#555555" Foreground="White" BorderThickness="0" Cursor="Hand"
+                        Click="SeleccionarTodo_Click"/>
+                <Button Content="Deseleccionar todo" Width="135" Height="32"
+                        Background="#888888" Foreground="White" BorderThickness="0" Cursor="Hand"
+                        Click="DeseleccionarTodo_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancelar" Width="100" Height="36" Margin="0,0,10,0"
+                        Background="#CCCCCC" Foreground="#333333" BorderThickness="0"
+                        Cursor="Hand" Click="Cancelar_Click"/>
+                <Button Content="✔ Cargar seleccionados" Width="180" Height="36"
+                        Background="#0066CC" Foreground="White" BorderThickness="0"
+                        FontSize="14" Cursor="Hand" Click="CargarSeleccionados_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

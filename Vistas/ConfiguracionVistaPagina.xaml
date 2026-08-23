@@ -1,0 +1,208 @@
+<Window x:Class="SmartBins.Vistas.ConfiguracionVistaPagina"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configuración de Smart Bins"
+        Width="960" Height="650" MinWidth="640" MinHeight="480"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        FontFamily="Segoe UI" FontSize="13" Background="#F3F3F3">
+    <Window.Resources>
+        <Style x:Key="ConfigTextBox" TargetType="TextBox">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#AFAFAF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style x:Key="ConfigButton" TargetType="Button">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="14,3"/>
+            <Setter Property="Background" Value="#F7F7F7"/>
+            <Setter Property="BorderBrush" Value="#ADADAD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#202020"/>
+        </Style>
+        <Style x:Key="ConfigPrimaryButton" TargetType="Button" BasedOn="{StaticResource ConfigButton}">
+            <Setter Property="Background" Value="#0067C0"/>
+            <Setter Property="BorderBrush" Value="#005A9E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="MenuConfigItem" TargetType="ListBoxItem">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Margin" Value="6,2"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#E5F1FB"/>
+                    <Setter Property="Foreground" Value="#005A9E"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="PanelConfig" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D8D8D8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="26"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="58"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.RowSpan="2" Background="#FAFAFA" BorderBrush="#D7D7D7" BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Margin="20,22,18,15">
+                    <TextBlock Text="Configuración" FontSize="22" FontWeight="SemiBold" Foreground="#202020"/>
+                    <TextBlock Text="Smart Bins" Margin="0,3,0,0" Foreground="#666666"/>
+                </StackPanel>
+                <Separator Grid.Row="1" Margin="12,0"/>
+                <ListBox Grid.Row="2" x:Name="MenuSecciones" Margin="0,10,0,0"
+                         BorderThickness="0" Background="Transparent"
+                         ItemContainerStyle="{StaticResource MenuConfigItem}"
+                         SelectionChanged="MenuSecciones_SelectionChanged">
+                    <ListBoxItem Content="General" Tag="General" IsSelected="True"/>
+                    <ListBoxItem Content="Tiempos" Tag="Tiempos"/>
+                    <ListBoxItem Content="Balanceo y similitud" Tag="Balanceo"/>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Margin="24">
+            <Border x:Name="PanelGeneral" Style="{StaticResource PanelConfig}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="Valores predeterminados" FontSize="20" FontWeight="SemiBold"/>
+                        <TextBlock Text="Se aplican al crear ensambles y preparar corridas nuevas."
+                                   Margin="0,5,0,24" Foreground="#666666"/>
+                        <Grid MaxWidth="620" HorizontalAlignment="Left">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="280"/>
+                                <ColumnDefinition Width="28"/>
+                                <ColumnDefinition Width="280"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Operadores / estaciones" FontWeight="SemiBold"/>
+                                <TextBox x:Name="TxtOperadores" Margin="0,7,0,0" Style="{StaticResource ConfigTextBox}"/>
+                                <TextBlock Text="Valor inicial al crear un ensamble." Margin="0,6,0,0"
+                                           FontSize="12" Foreground="#777777"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Unidades de prueba" FontWeight="SemiBold"/>
+                                <TextBox x:Name="TxtUnidadesPrueba" Margin="0,7,0,0" Style="{StaticResource ConfigTextBox}"/>
+                                <TextBlock Text="Cantidad inicial en Producción." Margin="0,6,0,0"
+                                           FontSize="12" Foreground="#777777"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <Border x:Name="PanelTiempos" Style="{StaticResource PanelConfig}" Visibility="Collapsed">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="Tiempos de componentes" FontSize="20" FontWeight="SemiBold"/>
+                        <TextBlock Text="Administra los niveles disponibles en Inventario."
+                                   Margin="0,5,0,24" Foreground="#666666"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtNuevoTiempo" Style="{StaticResource ConfigTextBox}"
+                                     ToolTip="Tiempo entero en segundos"/>
+                            <Button Grid.Column="2" Content="Agregar nivel" MinWidth="125"
+                                    Click="AgregarTiempo_Click" Style="{StaticResource ConfigButton}"/>
+                        </Grid>
+                        <TextBlock Text="Valores enteros de 1 a 30 segundos."
+                                   Margin="0,7,0,14" FontSize="12" Foreground="#777777"/>
+                        <ListBox x:Name="ListaNivelesTiempo" MinHeight="180" MaxHeight="330"
+                                 BorderBrush="#D0D0D0" BorderThickness="1" Padding="5">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="7,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding StringFormat={}{0} segundos}" VerticalAlignment="Center"/>
+                                        <Button Grid.Column="1" Content="Quitar" Padding="12,3" Margin="12,0,0,0"
+                                                Tag="{Binding}" Click="QuitarTiempo_Click"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <Border x:Name="PanelBalanceo" Style="{StaticResource PanelConfig}" Visibility="Collapsed">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="Balanceo y similitud de partes" FontSize="20" FontWeight="SemiBold"/>
+                        <TextBlock Text="Define cuándo distribuir partes repetidas y la sensibilidad para detectar números parecidos."
+                                   Margin="0,5,0,24" Foreground="#666666" TextWrapping="Wrap"/>
+                        <UniformGrid Columns="2" MaxWidth="650" HorizontalAlignment="Left">
+                            <StackPanel Margin="0,0,22,18">
+                                <TextBlock Text="Repeticiones mínimas para distribuir" FontWeight="SemiBold"/>
+                                <TextBox x:Name="TxtUmbralRepeticiones" Margin="0,7,0,0" Style="{StaticResource ConfigTextBox}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,0,18">
+                                <TextBlock Text="Mezcla alta (%)" FontWeight="SemiBold"/>
+                                <TextBox x:Name="TxtPorcentajeMezcla" Margin="0,7,0,0" Style="{StaticResource ConfigTextBox}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,22,18">
+                                <TextBlock Text="Partes distintas mínimas" FontWeight="SemiBold"/>
+                                <TextBox x:Name="TxtPartesDistintas" Margin="0,7,0,0" Style="{StaticResource ConfigTextBox}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,0,18">
+                                <TextBlock Text="Caracteres finales exactos" FontWeight="SemiBold"/>
+                                <TextBox x:Name="TxtSufijoExacto" Margin="0,7,0,0" Style="{StaticResource ConfigTextBox}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,22,0">
+                                <TextBlock Text="Caracteres finales parecidos" FontWeight="SemiBold"/>
+                                <TextBox x:Name="TxtSufijoParecido" Margin="0,7,0,0" Style="{StaticResource ConfigTextBox}"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Diferencias permitidas" FontWeight="SemiBold"/>
+                                <TextBox x:Name="TxtDiferencias" Margin="0,7,0,0" Style="{StaticResource ConfigTextBox}"/>
+                            </StackPanel>
+                        </UniformGrid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="1" Grid.Column="1" Background="#FAFAFA"
+                BorderBrush="#D7D7D7" BorderThickness="0,1,0,0">
+            <Grid Margin="24,0">
+                <TextBlock x:Name="TxtEstado" VerticalAlignment="Center"
+                           Foreground="#1E7A34" FontWeight="SemiBold"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Content="Restablecer valores" Margin="0,0,10,0" MinWidth="145"
+                            Click="Restablecer_Click" Style="{StaticResource ConfigButton}"/>
+                    <Button Content="Guardar configuración" MinWidth="170"
+                            Click="Guardar_Click" Style="{StaticResource ConfigPrimaryButton}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

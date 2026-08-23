@@ -1,0 +1,133 @@
+<Window x:Class="SmartBins.Vistas.EstacionOperadorVentana"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SMART BINS - Estación 1" Width="1180" Height="760"
+        WindowStartupLocation="CenterScreen" Background="#EEF1F4"
+        KeyDown="Window_KeyDown">
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Padding="12" Background="#0066CC" CornerRadius="10">
+            <Grid>
+                <StackPanel>
+                    <TextBlock x:Name="TxtNumeroEstacion" Foreground="White"
+                               FontSize="25" FontWeight="Bold"/>
+                    <TextBlock x:Name="TxtEnsamble" Foreground="#DCEEFF" FontSize="15"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right">
+                    <TextBlock x:Name="TxtUnidad" Foreground="White" FontSize="20"
+                               FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                    <TextBlock x:Name="TxtEstado" Foreground="#DCEEFF" FontSize="14"
+                               HorizontalAlignment="Right"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.85*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="0.95*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Background="White" CornerRadius="10" Padding="8">
+                <Grid>
+                    <Grid x:Name="GaleriaImagenesProduccion"/>
+                    <TextBlock x:Name="TxtSinImagenesProduccion"
+                               Text="Sin imágenes para esta operación"
+                               Foreground="#89939D" FontSize="16"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel>
+                        <TextBlock x:Name="TxtPaso" Foreground="#0066CC" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="TxtNombreComponente" Margin="0,3,0,0"
+                                   FontSize="25" FontWeight="Bold" Foreground="#202A34"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock x:Name="TxtNumeroParte" Margin="0,2,0,0"
+                                   FontSize="14" Foreground="#687580"/>
+                    </StackPanel>
+
+                    <UniformGrid Grid.Row="1" Columns="4" Margin="0,12,0,0">
+                        <StackPanel Margin="0,0,5,0">
+                            <TextBlock Text="Cantidad" Foreground="#78838D"/>
+                            <TextBlock x:Name="TxtCantidad" FontSize="16" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Margin="5,0">
+                            <TextBlock Text="Referencia" Foreground="#78838D"/>
+                            <TextBlock x:Name="TxtReferencia" FontSize="16" FontWeight="SemiBold"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                        <StackPanel Margin="5,0">
+                            <TextBlock Text="Bin" Foreground="#78838D"/>
+                            <TextBlock x:Name="TxtBin" FontSize="16" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Margin="5,0,0,0">
+                            <TextBlock Text="Polaridad" Foreground="#78838D"/>
+                            <TextBlock x:Name="TxtPolaridad" FontSize="16" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </UniformGrid>
+
+                    <Border Grid.Row="2" Margin="0,12,0,0" Padding="12"
+                            Background="#F4F8FC" CornerRadius="8">
+                        <StackPanel>
+                            <TextBlock Text="INSTRUCCIÓN" Foreground="#587086" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="TxtInstruccion" Margin="0,4,0,0"
+                                       FontSize="17" TextWrapping="Wrap" Foreground="#263542"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="4" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Objetivo" Foreground="#78838D"/>
+                            <TextBlock x:Name="TxtTiempoObjetivo" FontSize="18" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="Transcurrido" Foreground="#78838D"/>
+                            <TextBlock x:Name="TxtTiempoTranscurrido" FontSize="18" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                            <TextBlock Text="Diferencia" Foreground="#78838D"/>
+                            <TextBlock x:Name="TxtDiferencia" FontSize="18" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ProgressBar x:Name="BarraProgreso" Height="16" Minimum="0" Maximum="100"
+                         Foreground="#18A66A"/>
+            <Button Grid.Row="1" x:Name="BtnCompletar"
+                    Content="COMPLETAR OPERACIÓN   (F8)"
+                    Height="58" Margin="0,8,0,0" Background="#18A66A"
+                    Foreground="White" BorderThickness="0" FontSize="21"
+                    FontWeight="Bold" Cursor="Hand" Click="CompletarOperacion_Click"/>
+        </Grid>
+    </Grid>
+</Window>

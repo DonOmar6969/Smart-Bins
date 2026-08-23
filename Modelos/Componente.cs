@@ -4,8 +4,11 @@
     public class Componente
     {
         public int ComponenteID { get; set; }
-        public string Nombre { get; set; }
-        public string Descripcion { get; set; }
-        public string FotoRuta { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string Descripcion { get; set; } = string.Empty;
+        public string FotoRuta { get; set; } = string.Empty;
+        public decimal TiempoCiclo { get; set; }
+        public string NumeroParte { get; set; } = string.Empty;
+        public string Estatus { get; set; } = string.Empty;
     }
 }

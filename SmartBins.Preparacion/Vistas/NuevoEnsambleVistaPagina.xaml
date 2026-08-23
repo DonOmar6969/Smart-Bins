@@ -1,0 +1,484 @@
+﻿<Page x:Class="SmartBins.Vistas.NuevoEnsambleVistaPagina"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:SmartBins.Vistas"
+      KeepAlive="True"
+      Loaded="NuevoEnsambleVistaPagina_Loaded"
+      Title="Nuevo Ensamble">
+
+    <Page.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#0066CC"/>
+        <SolidColorBrush x:Key="AccentBrush"  Color="#2E7D32"/>
+        <SolidColorBrush x:Key="DangerBrush"  Color="#CC0000"/>
+        <SolidColorBrush x:Key="NeutralBrush" Color="#888888"/>
+        <SolidColorBrush x:Key="BgBrush"      Color="#F5F7FA"/>
+        <local:RutaAImagenSinBloqueoConverter x:Key="RutaAImagenConverter"/>
+
+        <DropShadowEffect x:Key="ShadowSoft" BlurRadius="12" ShadowDepth="2" Opacity="0.13"/>
+
+        <Style x:Key="SecuenciaTextoCentrado" TargetType="TextBlock">
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- BOTÓN -->
+        <Style TargetType="Button">
+            <Setter Property="Height"          Value="36"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin"          Value="4,0"/>
+            <Setter Property="Background"      Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" CornerRadius="9"
+                                Background="{TemplateBinding Background}"
+                                Padding="12,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.88"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.70"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TEXTBOX -->
+        <Style TargetType="TextBox">
+            <Setter Property="Height"   Value="34"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding"  Value="8,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="bd" CornerRadius="7" BorderThickness="1"
+                                BorderBrush="#D0D5DD" Background="White">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2,0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="bd" Property="BorderBrush"     Value="#0066CC"/>
+                                <Setter TargetName="bd" Property="BorderThickness" Value="1.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- LISTBOX ITEM -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin"  Value="2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="bd" Background="Transparent"
+                                BorderBrush="Transparent" BorderThickness="1"
+                                CornerRadius="7" Padding="6">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#F3F7F4"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#E4EFE8"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#8CAF98"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Page.Resources>
+
+    <Grid Background="{StaticResource BgBrush}" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- TÍTULO -->
+        <TextBlock Grid.Row="0"
+                   Text="Nuevo Ensamble"
+                   FontSize="24" FontWeight="Bold"
+                   Foreground="{StaticResource PrimaryBrush}"
+                   Margin="0,0,0,14"/>
+
+        <!-- HEADER DATOS DEL ENSAMBLE -->
+        <Border Grid.Row="1" Background="White" CornerRadius="10"
+                Padding="16,10" Margin="0,0,0,14"
+                Effect="{StaticResource ShadowSoft}">
+            <StackPanel>
+                <Border Background="#EEF4FF" BorderBrush="#B2CCFF"
+                        BorderThickness="1" CornerRadius="8"
+                        Padding="12,8" Margin="0,0,0,10">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="➜" FontSize="18" Foreground="#0066CC"
+                                   VerticalAlignment="Center" Margin="0,0,9,0"/>
+                        <TextBlock x:Name="TxtGuiaFlujo"
+                                   Text="Paso 1 de 7: escribe el nombre del ensamble."
+                                   Foreground="#1849A9" FontWeight="SemiBold"
+                                   VerticalAlignment="Center" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+            <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Label Content="Nombre:" FontWeight="SemiBold" Foreground="#444"/>
+                <TextBox x:Name="TxtNombreEnsamble" Width="200" Margin="0,0,20,0"
+                         TextChanged="CampoFlujo_TextChanged"/>
+
+                <Label Content="Unidad de trabajo:" FontWeight="SemiBold" Foreground="#444"/>
+            <ComboBox x:Name="CmbUnidadTrabajo" Width="190" Margin="0,0,20,0"
+                      Style="{StaticResource ProfessionalComboBoxStyle}"
+                          Height="34" FontSize="13" VerticalContentAlignment="Center"
+                          SelectionChanged="CampoFlujo_SelectionChanged">
+                    <ComboBoxItem Content="Seleccionar" IsSelected="True" IsEnabled="False"/>
+                    <ComboBoxItem Content="Interunit"/>
+                    <ComboBoxItem Content="Commercial Vehicle"/>
+                    <ComboBoxItem Content="Embedded Power"/>
+                </ComboBox>
+
+                <Label Content="Operadores default:" FontWeight="SemiBold" Foreground="#444"/>
+                <Border x:Name="SelectorOperadores" Height="34" BorderBrush="#D0D5DD" BorderThickness="1"
+                        CornerRadius="7" Background="White">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="42"/>
+                            <ColumnDefinition Width="36"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="−" FontSize="18" Margin="0"
+                                Background="#667085" ToolTip="Disminuir operadores"
+                                Click="DisminuirOperadores_Click"
+                                Height="Auto"
+                                Width="Auto"/>
+                        <TextBlock Grid.Column="1" x:Name="TxtOperadoresDefault"
+                                   Text="1" HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" FontWeight="SemiBold"/>
+                        <Button Grid.Column="2" Content="+" FontSize="18" Margin="0"
+                                Background="{StaticResource PrimaryBrush}"
+                                ToolTip="Aumentar operadores"
+                                Height="Auto"
+                                Width="Auto"
+                                Click="AumentarOperadores_Click"/>
+                    </Grid>
+                </Border>
+            </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- MAIN -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="13*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ── PANEL IZQUIERDO ── -->
+        <Border Grid.Column="0" Background="White" CornerRadius="12"
+                    Padding="14" Margin="0,0,10,0"
+                    Effect="{StaticResource ShadowSoft}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Componentes disponibles"
+                               FontSize="15" FontWeight="Bold"
+                               Foreground="#333" Margin="0,0,0,10"/>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,6">
+                        <Label Content="Tipo:" Width="55"/>
+                    <ComboBox x:Name="CmbTipo" Width="160"
+                              Style="{StaticResource ProfessionalComboBoxStyle}"
+                                  Height="34" FontSize="13"
+                                  VerticalContentAlignment="Center"
+                                  SelectionChanged="CmbTipo_SelectionChanged"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,8">
+                        <Label Content="Parte:" Width="55"/>
+                        <TextBox x:Name="TxtFiltroEspecificacion" Width="160"
+                                 TextChanged="TxtFiltroEspecificacion_TextChanged"/>
+                    </StackPanel>
+
+                    <!-- Lista componentes -->
+                    <ListBox Grid.Row="3" x:Name="ListaComponentes"
+                             BorderBrush="#E0E0E0" BorderThickness="1"
+                             Padding="4" Background="#FAFBFF"
+                             SelectionChanged="ListaComponentes_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="2">
+                                    <TextBlock Text="{Binding NumeroParte}"
+                                               FontSize="14" FontWeight="Bold" Foreground="#222"/>
+                                    <TextBlock Text="{Binding Descripcion}"
+                                               FontSize="12" Foreground="#777"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- Inputs -->
+                    <Grid Grid.Row="4" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                <TextBlock Text="Seg." FontSize="12" Foreground="#666" Margin="0,0,0,2"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                <TextBox x:Name="TxtTiempo" Height="33" FontSize="14"
+                                     IsEnabled="False" TextChanged="CampoFlujo_TextChanged"
+                                     LostFocus="TxtTiempo_LostFocus"/>
+                            </Grid>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="0,0,4,0">
+                                <TextBlock Text="Estación" FontSize="12" Foreground="#666" Margin="0,0,0,2"/>
+                                <TextBox x:Name="TxtEstacion" Height="33" FontSize="14"
+                                         TextChanged="CampoFlujo_TextChanged"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Margin="0,0,4,0">
+                                <TextBlock Text="Referencia" FontSize="12" Foreground="#666" Margin="0,0,0,2"/>
+                                <TextBox x:Name="TxtReferencia" Height="33" FontSize="14"
+                                         TextChanged="CampoFlujo_TextChanged"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="3">
+                                <TextBlock Text="Antes #" FontSize="12" Foreground="#666" Margin="0,0,0,2"/>
+                                <TextBox x:Name="TxtOrdenPrecedente" Height="33" FontSize="14"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Botones agregar/quitar -->
+                        <StackPanel Grid.Row="6" Orientation="Horizontal"
+                                HorizontalAlignment="Right" Margin="-11,0,0,0" Width="Auto">
+                            <Button x:Name="BtnAgregarPaso" Content="Agregar ▶" Width="100"
+                                Background="{StaticResource PrimaryBrush}"
+                                Click="AgregarComponenteSecuencia_Click"
+                                HorizontalAlignment="Right"/>
+                            <Button Content="◀ Quitar" Width="100"
+                                Background="{StaticResource DangerBrush}"
+                                Click="QuitarComponenteSecuencia_Click"
+                                HorizontalAlignment="Right"/>
+
+                    </StackPanel>
+                    <StackPanel Grid.Row="6" Orientation="Horizontal"
+                                HorizontalAlignment="Left" Margin="-11,0,0,0" Width="Auto">
+                        <Button x:Name="BtnEditarTiempo"
+                                Content="Perzonalizar" Width="Auto" 
+                                Background="#888888"
+                                ToolTip="Editar tiempo manualmente"
+                                Click="BtnEditarTiempo_Click"
+                                />
+
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ── PANEL DERECHO ── -->
+        <Border Grid.Column="1" Background="White" CornerRadius="12"
+                    Padding="14" Effect="{StaticResource ShadowSoft}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*" MinHeight="160"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Secuencia del ensamble"
+                               FontSize="15" FontWeight="Bold"
+                               Foreground="#333" Margin="0,0,0,10"/>
+
+                <DataGrid Grid.Row="1" x:Name="GridSecuencia"
+                          Style="{StaticResource ProfessionalDataGridStyle}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              BorderBrush="#E0E0E0" GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#F0F0F0"
+                              RowHeight="NaN" MinRowHeight="38" FontSize="11.5"
+                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              AlternatingRowBackground="#FAFBFF"
+                              SelectionChanged="GridSecuencia_SelectionChanged">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Height" Value="40"/>
+                                <Setter Property="Padding" Value="6,0"/>
+                                <Setter Property="Background" Value="#F2F4F7"/>
+                                <Setter Property="Foreground" Value="#344054"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="BorderBrush" Value="#E4E7EC"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding OrdenSecuencia}" Width="34"
+                                                ElementStyle="{StaticResource SecuenciaTextoCentrado}"/>
+                            <DataGridTextColumn Header="Est." Binding="{Binding EstacionAsignada}" Width="42"
+                                                ElementStyle="{StaticResource SecuenciaTextoCentrado}"/>
+                            <DataGridTextColumn Header="Referencia" Binding="{Binding Referencia}" Width="70"
+                                                ElementStyle="{StaticResource SecuenciaTextoCentrado}"/>
+                            <DataGridTextColumn Header="Núm. parte" Binding="{Binding NumeroParte}" Width="115"
+                                                ElementStyle="{StaticResource SecuenciaTextoCentrado}"/>
+                            <DataGridTextColumn Header="Componente"
+                                                Binding="{Binding NombreComponente}"
+                                                Width="1.15*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                        <Setter Property="TextAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Margin" Value="0,6"/>
+                                        <Setter Property="ToolTip" Value="{Binding NombreComponente}"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Descripción completa"
+                                                Binding="{Binding EspecificacionComponente}"
+                                                Width="2.85*"
+                                                MinWidth="190">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                        <Setter Property="TextAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Margin" Value="0,7"/>
+                                        <Setter Property="LineHeight" Value="17"/>
+                                        <Setter Property="ToolTip" Value="{Binding EspecificacionComponente}"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Seg." Binding="{Binding TiempoEstimado}" Width="48"
+                                                ElementStyle="{StaticResource SecuenciaTextoCentrado}"/>
+                            <DataGridTextColumn Header="Antes de" Binding="{Binding OrdenPrecedente}" Width="62"
+                                                ElementStyle="{StaticResource SecuenciaTextoCentrado}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,6">
+                        <Button Content="⬆ Subir" Width="90" Background="{StaticResource NeutralBrush}"
+                                Click="SubirComponente_Click"/>
+                        <Button Content="⬇ Bajar" Width="90" Background="{StaticResource NeutralBrush}"
+                                Click="BajarComponente_Click"/>
+                    </StackPanel>
+
+                    <!-- Galería de imágenes -->
+                    <Border Grid.Row="3" BorderBrush="#E0E0E0" BorderThickness="1"
+                            CornerRadius="8" Background="#FAFBFF" Padding="8">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <TextBlock Text="Imágenes del paso"
+                                           FontWeight="SemiBold" FontSize="13"
+                                           Foreground="#444" VerticalAlignment="Center"
+                                           Margin="0,0,12,0"/>
+                                <Button Content="📷 Agregar" Width="100"
+                                        Background="#555555" Click="SeleccionarImagenPaso_Click"/>
+                                <Button Content="🗑 Eliminar" Width="100"
+                                        Background="{StaticResource DangerBrush}"
+                                        Click="EliminarImagenPaso_Click"/>
+                            </StackPanel>
+
+                            <TextBlock x:Name="TxtSinImagenPaso" Grid.Row="1"
+                                       Text="Sin imágenes para este paso"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Foreground="#BBBBBB" FontSize="13"/>
+
+                            <ListBox x:Name="GaleriaImagenes" Grid.Row="1"
+                                     Background="Transparent" BorderThickness="0"
+                                     Visibility="Collapsed"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                     ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#DDD" BorderThickness="1"
+                                                Margin="4" CornerRadius="5" Background="White">
+                                            <Image Width="130" Height="95" Stretch="Uniform" Margin="4"
+                                                   Source="{Binding Converter={StaticResource RutaAImagenConverter}}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- BANNER ALERTA NO INVASIVA -->
+        <Border x:Name="BannerAlerta" Grid.Row="3"
+                Background="#FFF3CD" BorderBrush="#FFCC00"
+                BorderThickness="0,2,0,0" CornerRadius="0,0,8,8"
+                Padding="14,8" Margin="0,6,0,0" Visibility="Collapsed">
+            <Grid>
+                <TextBlock x:Name="TxtBannerAlerta"
+                           VerticalAlignment="Center" Foreground="#856404"
+                           FontSize="12" TextWrapping="Wrap" Margin="0,0,32,0"/>
+                <Button Content="✕" HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Width="26" Height="26" Background="Transparent"
+                        BorderThickness="0" Foreground="#856404"
+                        Click="CerrarBanner_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- FOOTER -->
+        <Grid Grid.Row="4" Margin="0,12,0,0">
+            <Button x:Name="BtnImportarExcel" Content="📊 Importar Excel"
+                    Background="{StaticResource AccentBrush}"
+                    HorizontalAlignment="Left" Width="160"
+                    Click="SeleccionarExcel_Click"/>
+            <Button x:Name="BtnGuardarEnsamble" Content="💾 Guardar Ensamble"
+                    Background="{StaticResource PrimaryBrush}"
+                    HorizontalAlignment="Right" Width="180"
+                    Click="GuardarEnsamble_Click"/>
+        </Grid>
+    </Grid>
+</Page>

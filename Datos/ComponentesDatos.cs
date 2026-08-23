@@ -9,52 +9,91 @@ namespace SmartBins.Datos
 
         public List<Componente> ObtenerTodos()
         {
-            List<Componente> lista = new List<Componente>();
+            var lista = new List<Componente>();
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "SELECT ComponenteID, Nombre, Descripcion, FotoRuta FROM Componentes";
-                SqlCommand cmd = new SqlCommand(query, con);
-                SqlDataReader reader = cmd.ExecuteReader();
+                string query = "SELECT ComponenteID, Nombre, Descripcion, FotoRuta, NumeroParte, TiempoCiclo, Estatus FROM SB.Componentes";
+                SqlDataReader reader = new SqlCommand(query, con).ExecuteReader();
                 while (reader.Read())
-                {
-                    lista.Add(new Componente
-                    {
-                        ComponenteID = (int)reader["ComponenteID"],
-                        Nombre = reader["Nombre"].ToString(),
-                        Descripcion = reader["Descripcion"].ToString(),
-                        FotoRuta = reader["FotoRuta"].ToString()
-                    });
-                }
+                    lista.Add(MapearComponente(reader));
             }
             return lista;
         }
 
-        public void Agregar(Componente componente)
+        public bool Agregar(Componente c)
         {
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "INSERT INTO Componentes (Nombre, Descripcion, FotoRuta) VALUES (@Nombre, @Descripcion, @FotoRuta)";
-                SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@Nombre", componente.Nombre);
-                cmd.Parameters.AddWithValue("@Descripcion", componente.Descripcion ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@FotoRuta", componente.FotoRuta ?? (object)DBNull.Value);
-                cmd.ExecuteNonQuery();
+                string query = @"
+                    IF EXISTS (
+                        SELECT 1
+                        FROM SB.Componentes WITH (UPDLOCK, HOLDLOCK)
+                        WHERE UPPER(LTRIM(RTRIM(NumeroParte))) =
+                              UPPER(LTRIM(RTRIM(@NumeroParte)))
+                    )
+                        SELECT CAST(0 AS bit);
+                    ELSE
+                    BEGIN
+                        INSERT INTO SB.Componentes
+                            (Nombre, Descripcion, FotoRuta, NumeroParte, TiempoCiclo, Estatus)
+                        VALUES
+                            (@Nombre, @Descripcion, @FotoRuta, @NumeroParte, @TiempoCiclo, @Estatus);
+                        SELECT CAST(1 AS bit);
+                    END";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@Nombre", c.Nombre);
+                cmd.Parameters.AddWithValue("@Descripcion", c.Descripcion ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@FotoRuta", c.FotoRuta ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@NumeroParte", c.NumeroParte?.Trim() ?? string.Empty);
+                cmd.Parameters.AddWithValue("@TiempoCiclo", c.TiempoCiclo);
+                cmd.Parameters.AddWithValue("@Estatus", c.Estatus ?? "Desactualizado");
+                return Convert.ToBoolean(cmd.ExecuteScalar());
             }
         }
 
-        public void Actualizar(Componente componente)
+        public bool ExisteNumeroParte(string numeroParte, int componenteIdExcluir = 0)
+        {
+            if (string.IsNullOrWhiteSpace(numeroParte)) return false;
+
+            using (SqlConnection con = conexion.ObtenerConexion())
+            {
+                con.Open();
+                string query = @"
+                    SELECT COUNT(*)
+                    FROM SB.Componentes
+                    WHERE UPPER(LTRIM(RTRIM(NumeroParte))) =
+                          UPPER(LTRIM(RTRIM(@NumeroParte)))
+                      AND (@ComponenteIDExcluir = 0 OR ComponenteID <> @ComponenteIDExcluir)";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@NumeroParte", numeroParte.Trim());
+                cmd.Parameters.AddWithValue("@ComponenteIDExcluir", componenteIdExcluir);
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            }
+        }
+
+        public void Actualizar(Componente c)
         {
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "UPDATE Componentes SET Nombre = @Nombre, Descripcion = @Descripcion, FotoRuta = @FotoRuta WHERE ComponenteID = @ComponenteID";
-                SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@ComponenteID", componente.ComponenteID);
-                cmd.Parameters.AddWithValue("@Nombre", componente.Nombre);
-                cmd.Parameters.AddWithValue("@Descripcion", componente.Descripcion ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@FotoRuta", componente.FotoRuta ?? (object)DBNull.Value);
+                string query = @"UPDATE SB.Componentes
+                                 SET Nombre      = @Nombre,
+                                     Descripcion = @Descripcion,
+                                     FotoRuta    = @FotoRuta,
+                                     NumeroParte = @NumeroParte,
+                                     TiempoCiclo = @TiempoCiclo,
+                                     Estatus     = @Estatus
+                                 WHERE ComponenteID = @ComponenteID";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ComponenteID", c.ComponenteID);
+                cmd.Parameters.AddWithValue("@Nombre", c.Nombre);
+                cmd.Parameters.AddWithValue("@Descripcion", c.Descripcion ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@FotoRuta", c.FotoRuta ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@NumeroParte", c.NumeroParte ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@TiempoCiclo", c.TiempoCiclo);
+                cmd.Parameters.AddWithValue("@Estatus", c.Estatus ?? "Desactualizado");
                 cmd.ExecuteNonQuery();
             }
         }
@@ -64,8 +103,7 @@ namespace SmartBins.Datos
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "DELETE FROM Componentes WHERE ComponenteID = @ComponenteID";
-                SqlCommand cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand("DELETE FROM SB.Componentes WHERE ComponenteID = @ComponenteID", con);
                 cmd.Parameters.AddWithValue("@ComponenteID", componenteID);
                 cmd.ExecuteNonQuery();
             }
@@ -73,51 +111,76 @@ namespace SmartBins.Datos
 
         public List<string> ObtenerTipos()
         {
-            List<string> tipos = new List<string>();
+            var tipos = new List<string>();
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "SELECT DISTINCT Nombre FROM Componentes ORDER BY Nombre";
-                SqlCommand cmd = new SqlCommand(query, con);
-                SqlDataReader reader = cmd.ExecuteReader();
+                var reader = new SqlCommand("SELECT DISTINCT Nombre FROM SB.Componentes ORDER BY Nombre", con).ExecuteReader();
                 while (reader.Read())
                     tipos.Add(reader["Nombre"].ToString());
             }
             return tipos;
         }
 
-        public List<Componente> ObtenerPorFiltro(string tipo, string especificacion)
+        public List<Componente> ObtenerPorFiltro(string tipo, string numeroParte)
         {
-            List<Componente> lista = new List<Componente>();
+            var lista = new List<Componente>();
             using (SqlConnection con = conexion.ObtenerConexion())
             {
                 con.Open();
-                string query = "SELECT ComponenteID, Nombre, Descripcion FROM Componentes WHERE 1=1";
+                string query = "SELECT ComponenteID, Nombre, Descripcion, NumeroParte, TiempoCiclo, Estatus FROM SB.Componentes WHERE 1=1";
 
                 if (!string.IsNullOrWhiteSpace(tipo))
                     query += " AND Nombre = @Nombre";
-                if (!string.IsNullOrWhiteSpace(especificacion))
-                    query += " AND Descripcion LIKE @Descripcion";
+                if (!string.IsNullOrWhiteSpace(numeroParte))
+                    query += " AND NumeroParte LIKE @NumeroParte";
 
-                SqlCommand cmd = new SqlCommand(query, con);
-
+                var cmd = new SqlCommand(query, con);
                 if (!string.IsNullOrWhiteSpace(tipo))
                     cmd.Parameters.AddWithValue("@Nombre", tipo);
-                if (!string.IsNullOrWhiteSpace(especificacion))
-                    cmd.Parameters.AddWithValue("@Descripcion", "%" + especificacion + "%");
+                if (!string.IsNullOrWhiteSpace(numeroParte))
+                    cmd.Parameters.AddWithValue("@NumeroParte", "%" + numeroParte + "%");
 
-                SqlDataReader reader = cmd.ExecuteReader();
+                var reader = cmd.ExecuteReader();
                 while (reader.Read())
-                {
                     lista.Add(new Componente
                     {
-                        ComponenteID = (int)reader["ComponenteID"],
-                        Nombre = reader["Nombre"].ToString(),
-                        Descripcion = reader["Descripcion"].ToString()
+                        ComponenteID = reader["ComponenteID"] == DBNull.Value ? 0 : Convert.ToInt32(reader["ComponenteID"]),
+                        Nombre = reader["Nombre"] == DBNull.Value ? "" : reader["Nombre"].ToString(),
+                        NumeroParte = reader["NumeroParte"] == DBNull.Value ? "" : reader["NumeroParte"].ToString(),
+                        Descripcion = reader["Descripcion"] == DBNull.Value ? "" : reader["Descripcion"].ToString(),
+                        TiempoCiclo = reader["TiempoCiclo"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["TiempoCiclo"]),
+                        Estatus = reader["Estatus"] == DBNull.Value ? "Desactualizado" : reader["Estatus"].ToString()
                     });
-                }
             }
             return lista;
         }
+
+        public Componente ObtenerPorNumeroParte(string numeroParte)
+        {
+            using (SqlConnection con = conexion.ObtenerConexion())
+            {
+                con.Open();
+                string sql = @"SELECT TOP 1 ComponenteID, NumeroParte, Nombre, Descripcion, FotoRuta, TiempoCiclo, Estatus
+                               FROM SB.Componentes
+                               WHERE LTRIM(RTRIM(NumeroParte)) = LTRIM(RTRIM(@NumeroParte))";
+                var cmd = new SqlCommand(sql, con);
+                cmd.Parameters.AddWithValue("@NumeroParte", numeroParte?.Trim() ?? string.Empty);
+                var reader = cmd.ExecuteReader();
+                return reader.Read() ? MapearComponente(reader) : null;
+            }
+        }
+
+        // Mapeo centralizado para no repetir lógica
+        private Componente MapearComponente(SqlDataReader r) => new Componente
+        {
+            ComponenteID = r["ComponenteID"] == DBNull.Value ? 0 : Convert.ToInt32(r["ComponenteID"]),
+            NumeroParte = r["NumeroParte"] == DBNull.Value ? "" : r["NumeroParte"].ToString(),
+            Nombre = r["Nombre"] == DBNull.Value ? "" : r["Nombre"].ToString(),
+            Descripcion = r["Descripcion"] == DBNull.Value ? "" : r["Descripcion"].ToString(),
+            FotoRuta = r["FotoRuta"] == DBNull.Value ? "" : r["FotoRuta"].ToString(),
+            TiempoCiclo = r["TiempoCiclo"] == DBNull.Value ? 0 : Convert.ToDecimal(r["TiempoCiclo"]),
+            Estatus = r["Estatus"] == DBNull.Value ? "Desactualizado" : r["Estatus"].ToString()
+        };
     }
 }

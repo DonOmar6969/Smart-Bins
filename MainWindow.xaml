@@ -1,12 +1,114 @@
-﻿<Window x:Class="SMART_BINS.MainWindow"
+﻿<Window x:Class="SmartBins.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SMART_BINS"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Smart Bins - Eaton" Height="600" Width="950"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        Background="#F2F2F2">
+
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="ColMenu" Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Menú lateral -->
+        <Grid Grid.Column="0"
+              x:Name="MenuLateral"
+              Background="#0066CC">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="PanelTitulo" Grid.Column="0" Margin="10,3,8,5">
+                    <Border Padding="5,3"
+                            Background="#F7FAFC"
+                            CornerRadius="7">
+                        <Image Source="/Assets/Branding/Eaton-logo.png"
+                               Height="67"
+                               Stretch="Uniform"
+                               ToolTip="EATON"/>
+                    </Border>
+                    <TextBlock Text="SMART BINS"
+                               Margin="3,5,0,0"
+                               Foreground="White"
+                               FontSize="14"
+                               FontWeight="Bold"/>
+                </StackPanel>
+                
+            </Grid>
+
+            <Separator Grid.Row="1" Background="#0055AA" Margin="10,5"/>
+
+            <StackPanel x:Name="MenuExpandido" Grid.Row="2" Margin="0,12,0,0">
+                <Button Content="⌂  Inicio" Tag="Inicio" Style="{StaticResource BotonMenu}" Click="Inicio_Click"/>
+                <Button Content="🏭  Producción" Tag="Produccion" Style="{StaticResource BotonMenu}" Click="Produccion_Click"/>
+            </StackPanel>
+
+            <Border x:Name="PieMenuExpandido"
+                    Grid.Row="3"
+                    Margin="10,0,10,14"
+                    Padding="10,9"
+                    Background="#0059B3"
+                    BorderBrush="#2D7DCC"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                <StackPanel>
+                    <Button Content="⚙  Configuración"
+                            Tag="Configuracion"
+                            Height="32"
+                            Margin="0,0,0,7"
+                            Padding="8,0"
+                            HorizontalContentAlignment="Center"
+                            Background="#1A73C8"
+                            BorderBrush="#65A2D9"
+                            BorderThickness="1"
+                            Foreground="White"
+                            FontSize="11"
+                            FontWeight="SemiBold"
+                            Cursor="Hand"
+                            ToolTip="Parámetros del sistema"
+                            Click="Configuracion_Click"/>
+                    <Button Content="ⓘ  Acerca de"
+                            Height="30"
+                            Margin="0,0,0,8"
+                            Padding="8,0"
+                            HorizontalContentAlignment="Center"
+                            Background="#1A73C8"
+                            BorderBrush="#65A2D9"
+                            BorderThickness="1"
+                            Foreground="White"
+                            FontSize="11"
+                            FontWeight="SemiBold"
+                            Cursor="Hand"
+                            ToolTip="Información de Smart Bins"
+                            Click="AcercaDe_Click"/>
+                    <Separator Margin="0,0,0,8"
+                               Background="#2D7DCC"/>
+                    <TextBlock Text="●  Sistema listo"
+                               HorizontalAlignment="Center"
+                               Foreground="#B7F0C4"
+                               FontSize="11"
+                               FontWeight="SemiBold"/>
+                    <TextBlock Text="Smart Bins  •  Versión 1.0"
+                               Margin="0,4,0,0"
+                               HorizontalAlignment="Center"
+                               Foreground="#D6E9FA"
+                               FontSize="10"/>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+        <!-- Área de contenido de las vistas -->
+        <Frame Grid.Column="1" x:Name="AreaContenido" NavigationUIVisibility="Hidden" Background="#F2F2F2" Navigated="AreaContenido_Navigated"/>
 
     </Grid>
 </Window>

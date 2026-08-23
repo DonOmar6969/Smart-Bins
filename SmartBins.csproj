@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Branding\Eaton-logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="tmp\**\*.cs" />
+    <Compile Remove="Datos\**\*.cs" />
+    <Compile Remove="Modelos\**\*.cs" />
+    <Compile Remove="Servicios\**\*.cs" />
+    <Compile Remove="SmartBins.Preparacion\**\*.cs" />
+    <Compile Remove="SmartBins.Core\**\*.cs" />
+    <EmbeddedResource Remove="tmp\**\*" />
+    <EmbeddedResource Remove="Datos\**\*" />
+    <EmbeddedResource Remove="Modelos\**\*" />
+    <EmbeddedResource Remove="Servicios\**\*" />
+    <EmbeddedResource Remove="SmartBins.Preparacion\**\*" />
+    <Page Remove="tmp\**\*.xaml" />
+    <Page Remove="SmartBins.Preparacion\**\*.xaml" />
+    <None Remove="SmartBins.Preparacion\**\*" />
+    <None Remove="SmartBins.Core\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="SmartBins.Core\SmartBins.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+    <PackageReference Include="PDFsharp-MigraDoc-WPF" Version="6.2.4" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

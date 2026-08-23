@@ -3,7 +3,7 @@ using SmartBins.Modelos;
 using System.Windows;
 namespace SmartBins.Datos
 {
-    internal class BinDatos
+    public class BinDatos
     {
         private readonly Conexion conexion = new Conexion();
 
@@ -15,7 +15,7 @@ namespace SmartBins.Datos
                 using (SqlConnection con = conexion.ObtenerConexion())
                 {
                     con.Open();
-                    string query = "SELECT Codigo, Descripcion FROM Bins";
+                    string query = "SELECT Codigo, Descripcion FROM SB.Bins";
                     SqlCommand cmd = new SqlCommand(query, con);            // Crea un comando SQL para seleccionar el código y la descripción de todos los bins
                     SqlDataReader reader = cmd.ExecuteReader();             // Ejecuta la consulta y obtiene un lector de datos
                     while (reader.Read())                                   // Itera a través de los resultados y agrega cada bin a la lista (Se agregan objetos de la clase bin)
@@ -30,11 +30,11 @@ namespace SmartBins.Datos
             }
             catch (SqlException ex)
             {
-                MessageBox.Show($"Error al obtener los bins: {ex.Message}", "Error de consulta", MessageBoxButton.OK, MessageBoxImage.Error);
+                global::SmartBins.Servicios.DialogoSmart.Mostrar($"Error al obtener los bins: {ex.Message}", "Error de consulta", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                global::SmartBins.Servicios.DialogoSmart.Mostrar($"Error inesperado: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return lista;
         }
@@ -45,17 +45,17 @@ namespace SmartBins.Datos
                 using (SqlConnection con = conexion.ObtenerConexion())
                 {
                     con.Open();
-                    string query = "INSERT INTO Bins (Codigo, Descripcion) VALUES (@Codigo, @Descripcion)";
+                    string query = "INSERT INTO SB.Bins (Codigo, Descripcion) VALUES (@Codigo, @Descripcion)";
                     SqlCommand cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@Codigo", bin.Codigo);
                     cmd.Parameters.AddWithValue("@Descripcion", bin.Descripcion);
                     cmd.ExecuteNonQuery();
-                    MessageBox.Show("Bin agregado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    global::SmartBins.Servicios.DialogoSmart.Mostrar("Bin agregado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch
             {
-                MessageBox.Show("Error: El código del bin ya existe. Por favor, ingrese un código único.", "Error de duplicado", MessageBoxButton.OK, MessageBoxImage.Error);
+                global::SmartBins.Servicios.DialogoSmart.Mostrar("Error: El código del bin ya existe. Por favor, ingrese un código único.", "Error de duplicado", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -66,21 +66,21 @@ namespace SmartBins.Datos
                 using (SqlConnection con = conexion.ObtenerConexion())
                 {
                     con.Open();
-                    string query = "UPDATE Bins SET Descripcion = @Descripcion WHERE Codigo = @Codigo";
+                    string query = "UPDATE SB.Bins SET Descripcion = @Descripcion WHERE Codigo = @Codigo";
                     SqlCommand cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@Codigo", bin.Codigo);
                     cmd.Parameters.AddWithValue("@Descripcion", bin.Descripcion);
                     cmd.ExecuteNonQuery();
-                    MessageBox.Show("Bin actualizado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    global::SmartBins.Servicios.DialogoSmart.Mostrar("Bin actualizado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (SqlException ex)
             {
-                MessageBox.Show($"Error al actualizar el bin: {ex.Message}", "Error de actualización", MessageBoxButton.OK, MessageBoxImage.Error);
+                global::SmartBins.Servicios.DialogoSmart.Mostrar($"Error al actualizar el bin: {ex.Message}", "Error de actualización", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                global::SmartBins.Servicios.DialogoSmart.Mostrar($"Error inesperado: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -91,20 +91,20 @@ namespace SmartBins.Datos
                 using (SqlConnection con = conexion.ObtenerConexion())
                 {
                     con.Open();
-                    string query = "DELETE FROM Bins WHERE Codigo = @Codigo";
+                    string query = "DELETE FROM SB.Bins WHERE Codigo = @Codigo";
                     SqlCommand cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@Codigo", codigo);
                     cmd.ExecuteNonQuery();
-                    MessageBox.Show("Bin eliminado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    global::SmartBins.Servicios.DialogoSmart.Mostrar("Bin eliminado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (SqlException ex)
             {
-                MessageBox.Show($"Error al eliminar el bin: {ex.Message}", "Error de eliminación", MessageBoxButton.OK, MessageBoxImage.Error);
+                global::SmartBins.Servicios.DialogoSmart.Mostrar($"Error al eliminar el bin: {ex.Message}", "Error de eliminación", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                global::SmartBins.Servicios.DialogoSmart.Mostrar($"Error inesperado: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
