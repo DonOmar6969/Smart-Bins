@@ -5,13 +5,114 @@
     <Application.Resources>
         <SolidColorBrush x:Key="PrimaryBrush" Color="#005EB8" />
         <SolidColorBrush x:Key="BackgroundBrush" Color="#F3F6F9" />
-        <Style x:Key="ProfessionalComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Height" Value="36" />
-            <Setter Property="Padding" Value="10,0" />
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#D0D5DD" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Style x:Key="ProfessionalComboBoxStyle"
+               TargetType="ComboBox">
+
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#1D2939"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D9DEE7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+
+                        <Grid>
+
+                            <!-- Caja principal -->
+                            <Border x:Name="MainBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="9">
+
+                                <Grid>
+
+                                    <!-- Texto seleccionado -->
+                                    <ContentPresenter
+                                Margin="{TemplateBinding Padding}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Content="{TemplateBinding SelectionBoxItem}"
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"/>
+
+                                    <!-- Flecha -->
+                                    <Path
+                                Width="10"
+                                Height="6"
+                                Margin="0,0,13,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Fill="#667085"
+                                Data="M 0 0 L 10 0 L 5 6 Z"/>
+
+                                </Grid>
+
+                            </Border>
+
+                            <!-- Menú desplegable -->
+                            <Popup x:Name="PART_Popup"
+                           Placement="Bottom"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           IsOpen="{TemplateBinding IsDropDownOpen}"
+                           PopupAnimation="Fade">
+
+                                <Border
+                            Margin="0,5,0,0"
+                            Background="White"
+                            BorderBrush="#D9DEE7"
+                            BorderThickness="1"
+                            CornerRadius="9">
+
+                                    <ScrollViewer
+                                MaxHeight="250"
+                                HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Auto">
+
+                                        <ItemsPresenter/>
+
+                                    </ScrollViewer>
+
+                                </Border>
+
+                            </Popup>
+
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+
+                            <!-- Hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="MainBorder"
+                                Property="BorderBrush"
+                                Value="#0B67C2"/>
+                            </Trigger>
+
+                            <!-- Abierto -->
+                            <Trigger Property="IsDropDownOpen" Value="True">
+                                <Setter TargetName="MainBorder"
+                                Property="BorderBrush"
+                                Value="#0B67C2"/>
+                            </Trigger>
+
+                            <!-- Deshabilitado -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="MainBorder"
+                                Property="Opacity"
+                                Value="0.55"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
         </Style>
         <Style x:Key="ProfessionalDataGridStyle" TargetType="DataGrid">
             <Setter Property="Background" Value="White" />
